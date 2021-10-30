@@ -21,18 +21,35 @@
 # repeat by increasing i by 1 until end of list
 #Time complexity of O(n^2)
 
-# nums = [-2,1,-3,4,-1,2,1,-5,4]
+nums = [-2,1,-3,4,-1,2,1,-5,4]
 # nums = [1]
-nums = [5,4,-1,7,8]
+# nums = [5,4,-1,7,8]
 sum = nums[0]
-largeSum = sum
+largeSum = nums[0]
 
 for i in range(0,len(nums)) :
     sum = nums[i]
     for j in range(i+1,len(nums)) :
         sum = sum + nums[j]
-        # print(" ".join(str(nums[i:j+1])) + " : " + str(sum))
         if sum > largeSum :
             largeSum = sum
 print (largeSum)
 
+# Kandane's algorithm 
+# set first element as max_so_far and max_ending_here. Then start looping from second element
+# find the max of max_ending_here + ith element and ith element
+# find the max of max_ending_here and max_so_far
+# Time complexity is O(n)
+
+nums = [-2,1,-3,4,-1,2,1,-5,4]
+# nums = [1]
+# nums = [5,4,-1,7,8]
+
+max_so_far = nums[0]
+max_ending_here = nums[0]
+
+for i in range (1, len(nums)):
+    max_ending_here = max(max_ending_here + nums[i], nums[i])
+    max_so_far = max(max_ending_here,max_so_far)
+
+print(max_so_far)
