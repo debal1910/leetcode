@@ -40,3 +40,13 @@ for i in enumerate(nums):
     if flag :
         break
 print(output)
+
+nums = [3,3]
+target = 6
+hashtable = {}
+for index, num in enumerate(nums):
+    remainder = target - num
+    if remainder in hashtable:
+        print(index,hashtable.get(remainder))
+    else :
+        hashtable[num] = index
