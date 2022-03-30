@@ -1,0 +1,44 @@
+---
+- hosts: all
+  become: true
+
+  tasks:
+  - name : "Update Ubuntu"
+    apt:
+      update_cache: "yes"
+  
+  - name: "Install required system packages"
+    apt:  name={{ item }} state=latest update_cache=yes
+    loop: ['ca-certificates', 'curl', 'gnupg', 'lsb-release','unzip']
+
+  - name: "Add Docker GPG apt Key"
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+
+  - name: "Add Docker Repository"
+    apt_repository:
+      repo: deb https://download.docker.com/linux/ubuntu bionic stable
+      state: present
+
+  - name: "Update apt and install docker-ce"
+    apt: update_cache=yes name=docker-ce state=latest
+
+  - name: "Get docker version"
+    shell: "docker -v | cut -d ' ' -f 3 | cut -d ',' -f 1"
+    register: docker_version
+
+  - name: "Download the awscli bundle."
+    get_url: url=https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip dest=/tmp/awscliv2.zip
+    register: aws_cli_download_bundle
+
+  - name: "Unarchive the installer"
+    unarchive: src=/tmp/awscliv2.zip dest=/tmp copy=no creates=/tmp/awscliv2
+    register: aws_cli_unarchive_installer
+
+  - name: "Install awscli package."
+    shell: "sh /tmp/aws/install"
+
+  - name: "Authenticate ECR"
+    shell: "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 920445221516.dkr.ecr.us-east-1.amazonaws.com"
+    register: aws_ecr_login
